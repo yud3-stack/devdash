@@ -1,4 +1,12 @@
-import { Columns3, Minus, Plus, RotateCcw, Rows3, X } from "lucide-react";
+import {
+  Columns3,
+  GitGraph,
+  Minus,
+  Plus,
+  RotateCcw,
+  Rows3,
+  X,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { LayoutTemplateSelector } from "./LayoutTemplateSelector";
 import { gridLimits } from "../../lib/layoutTemplates";
@@ -9,7 +17,9 @@ import type {
 } from "../../types/dashboard";
 
 type SettingsPanelProps = {
+  githubToken: string;
   layout: DashboardLayoutState;
+  onGitHubTokenChange: (token: string) => void;
   onClose: () => void;
   onGridChange: (grid: GridSize) => void;
   onResetLayout: () => void;
@@ -18,9 +28,11 @@ type SettingsPanelProps = {
 };
 
 export function SettingsPanel({
+  githubToken,
   layout,
   onClose,
   onGridChange,
+  onGitHubTokenChange,
   onResetLayout,
   onTemplateSelect,
   open,
@@ -79,6 +91,25 @@ export function SettingsPanel({
               onChange={(rows) => onGridChange({ ...layout.grid, rows })}
             />
           </div>
+        </section>
+
+        <section className="space-y-3">
+          <h3 className="text-xs font-bold uppercase text-accent-600">
+            GitHub Token
+          </h3>
+          <label className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 text-gray-500 focus-within:border-accent-100 focus-within:bg-white">
+            <GitGraph size={16} className="shrink-0" />
+            <input
+              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400"
+              type="password"
+              aria-label="GitHub Token"
+              autoComplete="off"
+              spellCheck={false}
+              value={githubToken}
+              placeholder="ghp_..."
+              onChange={(event) => onGitHubTokenChange(event.currentTarget.value)}
+            />
+          </label>
         </section>
 
         <button

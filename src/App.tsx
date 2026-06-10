@@ -6,6 +6,7 @@ import { ProjectsCard } from "./components/cards/ProjectsCard";
 import { BentoGrid } from "./components/layout/BentoGrid";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { useDashboardLayout } from "./hooks/useDashboardLayout";
+import { useGitHubToken } from "./hooks/useGitHubToken";
 
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -17,6 +18,7 @@ function App() {
     selectTemplate,
     updateGridSize,
   } = useDashboardLayout();
+  const { githubToken, setGitHubToken } = useGitHubToken();
 
   return (
     <main className="min-h-screen bg-[#f5f7f2] text-gray-950">
@@ -39,6 +41,7 @@ function App() {
       <BentoGrid columns={layout.grid.columns} rows={layout.grid.rows}>
         <ProfileCard layout={cardLayouts.profile} />
         <GitHubActivityCard
+          githubToken={githubToken}
           layout={cardLayouts.githubActivity}
           onResize={(axis, delta) =>
             resizeCard("githubActivity", axis, delta)
@@ -54,6 +57,8 @@ function App() {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onGridChange={updateGridSize}
+        githubToken={githubToken}
+        onGitHubTokenChange={setGitHubToken}
         onResetLayout={resetLayout}
         onTemplateSelect={selectTemplate}
       />
