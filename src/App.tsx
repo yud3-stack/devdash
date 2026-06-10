@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
+import { CalendarTasksCard } from "./components/cards/CalendarTasksCard";
 import { GitHubActivityCard } from "./components/cards/GitHubActivityCard";
 import { ProfileCard } from "./components/cards/ProfileCard";
 import { ProjectsCard } from "./components/cards/ProjectsCard";
@@ -48,6 +49,12 @@ function App() {
       </div>
       <BentoGrid columns={layout.grid.columns} rows={layout.grid.rows}>
         <ProfileCard layout={cardLayouts.profile} />
+        <ProjectsCard
+          editorCommand={editorCommand}
+          layout={cardLayouts.projects}
+          onResize={(axis, delta) => resizeCard("projects", axis, delta)}
+          projects={projectFolders}
+        />
         <GitHubActivityCard
           githubToken={githubToken}
           layout={cardLayouts.githubActivity}
@@ -55,11 +62,9 @@ function App() {
             resizeCard("githubActivity", axis, delta)
           }
         />
-        <ProjectsCard
-          editorCommand={editorCommand}
-          layout={cardLayouts.projects}
-          onResize={(axis, delta) => resizeCard("projects", axis, delta)}
-          projects={projectFolders}
+        <CalendarTasksCard
+          layout={cardLayouts.calendarTasks}
+          onResize={(axis, delta) => resizeCard("calendarTasks", axis, delta)}
         />
       </BentoGrid>
       <SettingsPanel

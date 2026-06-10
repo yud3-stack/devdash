@@ -37,6 +37,12 @@ export const layoutTemplates: LayoutTemplate[] = [
 ];
 
 const templateIds = layoutTemplates.map((template) => template.id);
+const dashboardCardIds: DashboardCardId[] = [
+  "profile",
+  "githubActivity",
+  "projects",
+  "calendarTasks",
+];
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -77,6 +83,7 @@ export function createLayoutFromTemplate(
 ): DashboardLayoutState {
   const grid = clampGridSize(requestedGrid);
   const topBandRows = clamp(2, 1, grid.rows - 1);
+  const bottomBandRows = grid.rows - topBandRows;
 
   if (templateId === "compact") {
     const profileRows = topBandRows;
@@ -84,8 +91,9 @@ export function createLayoutFromTemplate(
     return {
       cards: [
         card("profile", 1, profileRows, grid, false),
-        card("githubActivity", grid.columns - 1, grid.rows, grid),
-        card("projects", 1, grid.rows - profileRows, grid),
+        card("projects", grid.columns - 1, profileRows, grid),
+        card("githubActivity", 1, bottomBandRows, grid),
+        card("calendarTasks", grid.columns - 1, bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -93,11 +101,25 @@ export function createLayoutFromTemplate(
   }
 
   if (templateId === "wide") {
+    if (grid.columns < 4) {
+      return {
+        cards: [
+          card("profile", 1, topBandRows, grid, false),
+          card("projects", grid.columns - 1, topBandRows, grid),
+          card("githubActivity", 1, bottomBandRows, grid),
+          card("calendarTasks", grid.columns - 1, bottomBandRows, grid),
+        ],
+        grid,
+        layoutTemplateId: templateId,
+      };
+    }
+
     return {
       cards: [
         card("profile", 1, topBandRows, grid, false),
-        card("githubActivity", grid.columns - 1, topBandRows, grid),
-        card("projects", grid.columns, grid.rows - topBandRows, grid),
+        card("projects", 2, topBandRows, grid),
+        card("calendarTasks", grid.columns - 3, topBandRows, grid),
+        card("githubActivity", grid.columns, bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -108,7 +130,13 @@ export function createLayoutFromTemplate(
     cards: [
       card("profile", 1, topBandRows, grid, false),
       card("projects", grid.columns - 1, topBandRows, grid),
-      card("githubActivity", grid.columns, grid.rows - topBandRows, grid),
+      card("githubActivity", Math.ceil(grid.columns / 2), bottomBandRows, grid),
+      card(
+        "calendarTasks",
+        Math.floor(grid.columns / 2),
+        bottomBandRows,
+        grid,
+      ),
     ],
     grid,
     layoutTemplateId: "balanced",
@@ -206,6 +234,24 @@ export function resizeCardLayout(
   const otherResizableCards = layout.cards.filter(
     (cardLayout) => cardLayout.resizable && cardLayout.id !== cardId,
   );
+  const fittedOtherCards = new Map<DashboardCardId, CardLayout>();
+  let remainingArea = remainingResizableArea;
+
+  otherResizableCards.forEach((cardLayout, index) => {
+    const remainingCardCount = otherResizableCards.length - index - 1;
+    const maxCardArea = Math.max(1, remainingArea - remainingCardCount);
+    const targetCardArea =
+      remainingCardCount === 0
+        ? remainingArea
+        : Math.min(getCardArea(cardLayout), maxCardArea);
+    const fittedCard = {
+      ...cardLayout,
+      ...fitSpanToArea(targetCardArea, layout.grid, cardLayout),
+    };
+
+    fittedOtherCards.set(cardLayout.id, fittedCard);
+    remainingArea = Math.max(0, remainingArea - getCardArea(fittedCard));
+  });
 
   return {
     ...layout,
@@ -214,11 +260,8 @@ export function resizeCardLayout(
         return fittedTarget;
       }
 
-      if (cardLayout.resizable && otherResizableCards.length === 1) {
-        return {
-          ...cardLayout,
-          ...fitSpanToArea(remainingResizableArea, layout.grid, cardLayout),
-        };
+      if (cardLayout.resizable) {
+        return fittedOtherCards.get(cardLayout.id) ?? cardLayout;
       }
 
       return cardLayout;
@@ -249,31 +292,42 @@ export function validateDashboardLayout(
   const grid = clampGridSize(candidate.grid);
   const cards = candidate.cards
     .map((cardLayout) => {
+      if (!cardLayout || typeof cardLayout !== "object") {
+        return null;
+      }
+
+      const id = "id" in cardLayout ? cardLayout.id : null;
+
       if (
-        !cardLayout ||
-        typeof cardLayout !== "object" ||
-        !("id" in cardLayout) ||
-        typeof cardLayout.id !== "string" ||
-        !["profile", "githubActivity", "projects"].includes(cardLayout.id)
+        typeof id !== "string" ||
+        !dashboardCardIds.includes(id as DashboardCardId)
       ) {
         return null;
       }
 
       return card(
-        cardLayout.id as DashboardCardId,
+        id as DashboardCardId,
         Number(cardLayout.colSpan) || 1,
         Number(cardLayout.rowSpan) || 1,
         grid,
-        cardLayout.id !== "profile",
+        id !== "profile",
       );
     })
     .filter((cardLayout): cardLayout is CardLayout => Boolean(cardLayout));
 
-  const hasEveryCard = ["profile", "githubActivity", "projects"].every(
+  const hasEveryCard = dashboardCardIds.every(
     (cardId) => cards.some((cardLayout) => cardLayout.id === cardId),
   );
+  const hasUniqueCards =
+    new Set(cards.map((cardLayout) => cardLayout.id)).size ===
+    dashboardCardIds.length;
+  const capacity = grid.columns * grid.rows;
+  const totalArea = cards.reduce(
+    (sum, cardLayout) => sum + getCardArea(cardLayout),
+    0,
+  );
 
-  if (!hasEveryCard) {
+  if (!hasEveryCard || !hasUniqueCards || totalArea > capacity) {
     return null;
   }
 

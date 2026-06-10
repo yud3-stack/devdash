@@ -5,7 +5,11 @@ export type GridSize = {
   rows: number;
 };
 
-export type DashboardCardId = "profile" | "githubActivity" | "projects";
+export type DashboardCardId =
+  | "profile"
+  | "githubActivity"
+  | "projects"
+  | "calendarTasks";
 
 export type GridAxis = "columns" | "rows";
 
