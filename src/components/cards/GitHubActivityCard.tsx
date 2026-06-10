@@ -1,5 +1,6 @@
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import { CardShell } from "./CardShell";
+import type { CardLayout, GridAxis } from "../../types/dashboard";
 
 const contributionLevels = [
   0, 1, 2, 1, 0, 3, 2, 0, 1, 4, 2, 1, 0, 2, 3, 4, 1, 0, 2, 2, 3, 0, 1, 2, 4,
@@ -22,10 +23,18 @@ const recentCommits = [
   "Sketch settings presets",
 ];
 
-export function GitHubActivityCard() {
+type GitHubActivityCardProps = {
+  layout: CardLayout;
+  onResize: (axis: GridAxis, delta: number) => void;
+};
+
+export function GitHubActivityCard({
+  layout,
+  onResize,
+}: GitHubActivityCardProps) {
   return (
-    <CardShell colSpan={2} rowSpan={2}>
-      <div className="flex h-full flex-col">
+    <CardShell layout={layout} onResize={onResize}>
+      <div className="flex h-full min-h-0 flex-col">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-bold uppercase text-accent-600">
@@ -40,7 +49,7 @@ export function GitHubActivityCard() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-flow-col grid-rows-7 gap-1 self-start">
+        <div className="mt-5 grid grid-flow-col grid-rows-7 gap-1 self-start overflow-hidden">
           {contributionLevels.map((level, index) => (
             <span
               className={`contribution-cell rounded-[3px] ${levelClassNames[level]}`}
@@ -49,7 +58,7 @@ export function GitHubActivityCard() {
           ))}
         </div>
 
-        <div className="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-3">
+        <div className="mt-5 grid min-h-0 grid-cols-[auto_1fr] gap-x-4 gap-y-3">
           <div>
             <p className="text-2xl font-extrabold text-gray-950">12</p>
             <p className="text-xs font-semibold text-gray-500">week streak</p>

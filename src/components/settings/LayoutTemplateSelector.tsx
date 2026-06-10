@@ -11,7 +11,7 @@ export function LayoutTemplateSelector({
   onSelect,
 }: LayoutTemplateSelectorProps) {
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2" role="listbox" aria-label="Layout template">
       {layoutTemplates.map((template) => (
         <button
           className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
@@ -21,9 +21,14 @@ export function LayoutTemplateSelector({
           }`}
           key={template.id}
           type="button"
+          role="option"
+          aria-selected={selectedId === template.id}
           onClick={() => onSelect(template.id)}
         >
           {template.name}
+          <span className="mt-1 block text-xs font-medium text-gray-400">
+            {template.grid.columns}x{template.grid.rows}
+          </span>
         </button>
       ))}
     </div>

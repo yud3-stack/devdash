@@ -1,5 +1,6 @@
 import { ExternalLink, FolderGit2, GitBranch } from "lucide-react";
 import { CardShell } from "./CardShell";
+import type { CardLayout, GridAxis } from "../../types/dashboard";
 
 const projects = [
   { name: "devdash", branch: "main", color: "bg-accent-500" },
@@ -7,10 +8,15 @@ const projects = [
   { name: "design-kit", branch: "release", color: "bg-violet-500" },
 ];
 
-export function ProjectsCard() {
+type ProjectsCardProps = {
+  layout: CardLayout;
+  onResize: (axis: GridAxis, delta: number) => void;
+};
+
+export function ProjectsCard({ layout, onResize }: ProjectsCardProps) {
   return (
-    <CardShell colSpan={1} rowSpan={3}>
-      <div className="flex h-full flex-col">
+    <CardShell layout={layout} onResize={onResize}>
+      <div className="flex h-full min-h-0 flex-col">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-bold uppercase text-accent-600">
@@ -23,10 +29,15 @@ export function ProjectsCard() {
           </div>
         </div>
 
-        <div className="mt-5 space-y-3">
+        <div
+          className="mt-4 grid min-h-0 gap-2 overflow-hidden"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          }}
+        >
           {projects.map((project) => (
             <div
-              className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5"
+              className="project-row grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2"
               key={project.name}
             >
               <span className={`h-2.5 w-2.5 rounded-full ${project.color}`} />

@@ -1,9 +1,14 @@
 import { Flame, GitBranch } from "lucide-react";
 import { CardShell } from "./CardShell";
+import type { CardLayout } from "../../types/dashboard";
 
-export function ProfileCard() {
+type ProfileCardProps = {
+  layout: CardLayout;
+};
+
+export function ProfileCard({ layout }: ProfileCardProps) {
   return (
-    <CardShell colSpan={1} rowSpan={2} resizable={false}>
+    <CardShell layout={layout}>
       <div className="flex h-full flex-col justify-between">
         <div>
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent-100 text-lg font-extrabold text-accent-700">
