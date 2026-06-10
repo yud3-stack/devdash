@@ -42,6 +42,7 @@ const dashboardCardIds: DashboardCardId[] = [
   "githubActivity",
   "projects",
   "calendarTasks",
+  "xFeed",
 ];
 
 function clamp(value: number, min: number, max: number) {
@@ -91,9 +92,10 @@ export function createLayoutFromTemplate(
     return {
       cards: [
         card("profile", 1, profileRows, grid, false),
-        card("projects", grid.columns - 1, profileRows, grid),
+        card("xFeed", grid.columns - 1, profileRows, grid),
+        card("projects", 1, bottomBandRows, grid),
         card("githubActivity", 1, bottomBandRows, grid),
-        card("calendarTasks", grid.columns - 1, bottomBandRows, grid),
+        card("calendarTasks", grid.columns - 2, bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -105,9 +107,10 @@ export function createLayoutFromTemplate(
       return {
         cards: [
           card("profile", 1, topBandRows, grid, false),
-          card("projects", grid.columns - 1, topBandRows, grid),
+          card("xFeed", grid.columns - 1, topBandRows, grid),
+          card("projects", 1, bottomBandRows, grid),
           card("githubActivity", 1, bottomBandRows, grid),
-          card("calendarTasks", grid.columns - 1, bottomBandRows, grid),
+          card("calendarTasks", grid.columns - 2, bottomBandRows, grid),
         ],
         grid,
         layoutTemplateId: templateId,
@@ -118,8 +121,9 @@ export function createLayoutFromTemplate(
       cards: [
         card("profile", 1, topBandRows, grid, false),
         card("projects", 2, topBandRows, grid),
-        card("calendarTasks", grid.columns - 3, topBandRows, grid),
-        card("githubActivity", grid.columns, bottomBandRows, grid),
+        card("xFeed", grid.columns - 3, topBandRows, grid),
+        card("githubActivity", Math.ceil(grid.columns / 2), bottomBandRows, grid),
+        card("calendarTasks", Math.floor(grid.columns / 2), bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -129,7 +133,8 @@ export function createLayoutFromTemplate(
   return {
     cards: [
       card("profile", 1, topBandRows, grid, false),
-      card("projects", grid.columns - 1, topBandRows, grid),
+      card("projects", 1, topBandRows, grid),
+      card("xFeed", grid.columns - 2, topBandRows, grid),
       card("githubActivity", Math.ceil(grid.columns / 2), bottomBandRows, grid),
       card(
         "calendarTasks",

@@ -1,4 +1,5 @@
 import {
+  AtSign,
   Columns3,
   FolderGit2,
   GitGraph,
@@ -33,8 +34,10 @@ type SettingsPanelProps = {
   onRemoveProjectFolder: (projectId: string) => void;
   onResetLayout: () => void;
   onTemplateSelect: (templateId: LayoutTemplateId) => void;
+  onXBearerTokenChange: (token: string) => void;
   open: boolean;
   projectFolders: ProjectFolder[];
+  xBearerToken: string;
 };
 
 const editorOptions: { label: string; value: EditorCommand }[] = [
@@ -55,8 +58,10 @@ export function SettingsPanel({
   onRemoveProjectFolder,
   onResetLayout,
   onTemplateSelect,
+  onXBearerTokenChange,
   open,
   projectFolders,
+  xBearerToken,
 }: SettingsPanelProps) {
   const [projectPath, setProjectPath] = useState("");
 
@@ -234,6 +239,27 @@ export function SettingsPanel({
               value={githubToken}
               placeholder="ghp_..."
               onChange={(event) => onGitHubTokenChange(event.currentTarget.value)}
+            />
+          </label>
+        </section>
+
+        <section className="space-y-3">
+          <h3 className="text-xs font-bold uppercase text-accent-600">
+            X Bearer Token
+          </h3>
+          <label className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 text-gray-500 focus-within:border-accent-100 focus-within:bg-white">
+            <AtSign size={16} className="shrink-0" />
+            <input
+              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400"
+              type="password"
+              aria-label="X Bearer Token"
+              autoComplete="off"
+              spellCheck={false}
+              value={xBearerToken}
+              placeholder="Bearer token"
+              onChange={(event) =>
+                onXBearerTokenChange(event.currentTarget.value)
+              }
             />
           </label>
         </section>

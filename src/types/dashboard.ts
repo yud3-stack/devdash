@@ -9,7 +9,8 @@ export type DashboardCardId =
   | "profile"
   | "githubActivity"
   | "projects"
-  | "calendarTasks";
+  | "calendarTasks"
+  | "xFeed";
 
 export type GridAxis = "columns" | "rows";
 

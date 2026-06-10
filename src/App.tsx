@@ -4,16 +4,18 @@ import { CalendarTasksCard } from "./components/cards/CalendarTasksCard";
 import { GitHubActivityCard } from "./components/cards/GitHubActivityCard";
 import { ProfileCard } from "./components/cards/ProfileCard";
 import { ProjectsCard } from "./components/cards/ProjectsCard";
+import { XFeedCard } from "./components/cards/XFeedCard";
 import { BentoGrid } from "./components/layout/BentoGrid";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { useDashboardLayout } from "./hooks/useDashboardLayout";
 import { useGitHubToken } from "./hooks/useGitHubToken";
 import { useProjectSettings } from "./hooks/useProjectSettings";
+import { useXBearerToken } from "./hooks/useXBearerToken";
+import type { CardLayout } from "./types/dashboard";
 
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const {
-    cardLayouts,
     layout,
     resetLayout,
     resizeCard,
@@ -28,6 +30,57 @@ function App() {
     removeProjectFolder,
     setEditorCommand,
   } = useProjectSettings();
+  const { setXBearerToken, xBearerToken } = useXBearerToken();
+
+  function renderCard(cardLayout: CardLayout) {
+    if (cardLayout.id === "profile") {
+      return <ProfileCard key={cardLayout.id} layout={cardLayout} />;
+    }
+
+    if (cardLayout.id === "projects") {
+      return (
+        <ProjectsCard
+          editorCommand={editorCommand}
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) => resizeCard("projects", axis, delta)}
+          projects={projectFolders}
+        />
+      );
+    }
+
+    if (cardLayout.id === "githubActivity") {
+      return (
+        <GitHubActivityCard
+          githubToken={githubToken}
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) =>
+            resizeCard("githubActivity", axis, delta)
+          }
+        />
+      );
+    }
+
+    if (cardLayout.id === "calendarTasks") {
+      return (
+        <CalendarTasksCard
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) => resizeCard("calendarTasks", axis, delta)}
+        />
+      );
+    }
+
+    return (
+      <XFeedCard
+        key={cardLayout.id}
+        layout={cardLayout}
+        onResize={(axis, delta) => resizeCard("xFeed", axis, delta)}
+        xBearerToken={xBearerToken}
+      />
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#f5f7f2] text-gray-950">
@@ -48,24 +101,7 @@ function App() {
         </button>
       </div>
       <BentoGrid columns={layout.grid.columns} rows={layout.grid.rows}>
-        <ProfileCard layout={cardLayouts.profile} />
-        <ProjectsCard
-          editorCommand={editorCommand}
-          layout={cardLayouts.projects}
-          onResize={(axis, delta) => resizeCard("projects", axis, delta)}
-          projects={projectFolders}
-        />
-        <GitHubActivityCard
-          githubToken={githubToken}
-          layout={cardLayouts.githubActivity}
-          onResize={(axis, delta) =>
-            resizeCard("githubActivity", axis, delta)
-          }
-        />
-        <CalendarTasksCard
-          layout={cardLayouts.calendarTasks}
-          onResize={(axis, delta) => resizeCard("calendarTasks", axis, delta)}
-        />
+        {layout.cards.map((cardLayout) => renderCard(cardLayout))}
       </BentoGrid>
       <SettingsPanel
         editorCommand={editorCommand}
@@ -81,6 +117,8 @@ function App() {
         onRemoveProjectFolder={removeProjectFolder}
         onResetLayout={resetLayout}
         onTemplateSelect={selectTemplate}
+        onXBearerTokenChange={setXBearerToken}
+        xBearerToken={xBearerToken}
       />
     </main>
   );
