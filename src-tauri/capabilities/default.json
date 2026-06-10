@@ -6,6 +6,42 @@
   "permissions": [
     "core:default",
     "opener:default",
+    "shell:default",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "open-code",
+          "cmd": "code",
+          "args": [{ "validator": ".+" }]
+        },
+        {
+          "name": "open-cursor",
+          "cmd": "cursor",
+          "args": [{ "validator": ".+" }]
+        },
+        {
+          "name": "open-windsurf",
+          "cmd": "windsurf",
+          "args": [{ "validator": ".+" }]
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "git-current-branch",
+          "cmd": "git",
+          "args": [
+            "-C",
+            { "validator": ".+" },
+            "branch",
+            "--show-current"
+          ]
+        }
+      ]
+    },
     "sql:default",
     "sql:allow-execute"
   ]

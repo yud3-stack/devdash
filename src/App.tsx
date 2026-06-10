@@ -7,6 +7,7 @@ import { BentoGrid } from "./components/layout/BentoGrid";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { useDashboardLayout } from "./hooks/useDashboardLayout";
 import { useGitHubToken } from "./hooks/useGitHubToken";
+import { useProjectSettings } from "./hooks/useProjectSettings";
 
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -19,6 +20,13 @@ function App() {
     updateGridSize,
   } = useDashboardLayout();
   const { githubToken, setGitHubToken } = useGitHubToken();
+  const {
+    addProjectFolder,
+    editorCommand,
+    projectFolders,
+    removeProjectFolder,
+    setEditorCommand,
+  } = useProjectSettings();
 
   return (
     <main className="min-h-screen bg-[#f5f7f2] text-gray-950">
@@ -48,17 +56,24 @@ function App() {
           }
         />
         <ProjectsCard
+          editorCommand={editorCommand}
           layout={cardLayouts.projects}
           onResize={(axis, delta) => resizeCard("projects", axis, delta)}
+          projects={projectFolders}
         />
       </BentoGrid>
       <SettingsPanel
+        editorCommand={editorCommand}
         layout={layout}
         open={settingsOpen}
+        projectFolders={projectFolders}
+        onAddProjectFolder={addProjectFolder}
         onClose={() => setSettingsOpen(false)}
+        onEditorCommandChange={setEditorCommand}
         onGridChange={updateGridSize}
         githubToken={githubToken}
         onGitHubTokenChange={setGitHubToken}
+        onRemoveProjectFolder={removeProjectFolder}
         onResetLayout={resetLayout}
         onTemplateSelect={selectTemplate}
       />
