@@ -1,3 +1,5 @@
+import { isTauriRuntime } from "./tauriRuntime";
+
 const databaseUrl = "sqlite:devdash.db";
 const localStoragePrefix = "devdash.preference.";
 
@@ -7,10 +9,6 @@ type PreferenceRow = {
 
 function getLocalStorageKey(key: string) {
   return `${localStoragePrefix}${key}`;
-}
-
-function isTauriRuntime() {
-  return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
 async function loadSqlPreference(key: string) {

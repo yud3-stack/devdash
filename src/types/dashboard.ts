@@ -9,6 +9,16 @@ export type DashboardCardId = "profile" | "githubActivity" | "projects";
 
 export type GridAxis = "columns" | "rows";
 
+export type EditorCommand = "code" | "cursor" | "windsurf";
+
+export type ProjectFolder = {
+  id: string;
+  branch: string;
+  color: string;
+  name: string;
+  path: string;
+};
+
 export type CardLayout = {
   id: DashboardCardId;
   colSpan: number;
@@ -29,11 +39,11 @@ export type DashboardLayoutState = {
 };
 
 export type AppSettings = {
-  editorCommand: "code" | "cursor" | "windsurf" | string;
+  editorCommand: EditorCommand;
   githubToken: string;
   grid: GridSize;
   layout: DashboardLayoutState;
   layoutTemplateId: LayoutTemplateId;
-  projectFolders: string[];
+  projectFolders: ProjectFolder[];
   xBearerToken: string;
 };
