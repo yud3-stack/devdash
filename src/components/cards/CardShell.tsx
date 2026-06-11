@@ -23,13 +23,13 @@ export function CardShell({
 
   return (
     <article
-      className={`relative min-h-0 overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm ${
+      className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm ${
         showResizeControls ? "pb-16" : ""
       } ${className}`}
       style={cardStyle}
       data-card-id={layout.id}
     >
-      {children}
+      <div className="min-h-0 flex-1">{children}</div>
       {showResizeControls ? (
         <div
           className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full border border-gray-100 bg-white p-1 text-gray-400 shadow-sm"

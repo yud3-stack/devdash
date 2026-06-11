@@ -5,6 +5,7 @@ import { FocusPomodoroCard } from "./components/cards/FocusPomodoroCard";
 import { GitHubActivityCard } from "./components/cards/GitHubActivityCard";
 import { ProfileCard } from "./components/cards/ProfileCard";
 import { ProjectsCard } from "./components/cards/ProjectsCard";
+import { SnippetManagerCard } from "./components/cards/SnippetManagerCard";
 import { XFeedCard } from "./components/cards/XFeedCard";
 import { BentoGrid } from "./components/layout/BentoGrid";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
@@ -84,11 +85,21 @@ function App() {
       );
     }
 
+    if (cardLayout.id === "focusPomodoro") {
+      return (
+        <FocusPomodoroCard
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) => resizeCard("focusPomodoro", axis, delta)}
+        />
+      );
+    }
+
     return (
-      <FocusPomodoroCard
+      <SnippetManagerCard
         key={cardLayout.id}
         layout={cardLayout}
-        onResize={(axis, delta) => resizeCard("focusPomodoro", axis, delta)}
+        onResize={(axis, delta) => resizeCard("snippets", axis, delta)}
       />
     );
   }
