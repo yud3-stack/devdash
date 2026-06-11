@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
 import { CalendarTasksCard } from "./components/cards/CalendarTasksCard";
+import { CommitHistoryCard } from "./components/cards/CommitHistoryCard";
 import { FocusPomodoroCard } from "./components/cards/FocusPomodoroCard";
 import { GitHubActivityCard } from "./components/cards/GitHubActivityCard";
 import { ProfileCard } from "./components/cards/ProfileCard";
@@ -95,11 +96,22 @@ function App() {
       );
     }
 
+    if (cardLayout.id === "snippets") {
+      return (
+        <SnippetManagerCard
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) => resizeCard("snippets", axis, delta)}
+        />
+      );
+    }
+
     return (
-      <SnippetManagerCard
+      <CommitHistoryCard
         key={cardLayout.id}
         layout={cardLayout}
-        onResize={(axis, delta) => resizeCard("snippets", axis, delta)}
+        onResize={(axis, delta) => resizeCard("commits", axis, delta)}
+        projects={projectFolders}
       />
     );
   }

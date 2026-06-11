@@ -39,6 +39,19 @@
             "branch",
             "--show-current"
           ]
+        },
+        {
+          "name": "git-recent-commits",
+          "cmd": "git",
+          "args": [
+            "-C",
+            { "validator": ".+" },
+            "log",
+            "-n",
+            "6",
+            "--date=relative",
+            "--pretty=format:%H%x1f%h%x1f%an%x1f%ar%x1f%s%x1e"
+          ]
         }
       ]
     },

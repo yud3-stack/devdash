@@ -45,6 +45,7 @@ const dashboardCardIds: DashboardCardId[] = [
   "xFeed",
   "focusPomodoro",
   "snippets",
+  "commits",
 ];
 
 function clamp(value: number, min: number, max: number) {
@@ -90,9 +91,12 @@ export function createLayoutFromTemplate(
 
   if (grid.columns === 2) {
     const remainingRows = grid.columns * grid.rows - 4;
-    const snippetRows = Math.ceil(remainingRows / 3);
-    const activityRows = Math.ceil((remainingRows - snippetRows) / 2);
-    const taskRows = remainingRows - snippetRows - activityRows;
+    const activityRows = Math.ceil(remainingRows / 4);
+    const taskRows = Math.ceil((remainingRows - activityRows) / 3);
+    const snippetRows = Math.ceil(
+      (remainingRows - activityRows - taskRows) / 2,
+    );
+    const commitRows = remainingRows - activityRows - taskRows - snippetRows;
 
     return {
       cards: [
@@ -103,6 +107,7 @@ export function createLayoutFromTemplate(
         card("snippets", 1, snippetRows, grid),
         card("githubActivity", 1, activityRows, grid),
         card("calendarTasks", 1, taskRows, grid),
+        card("commits", 1, commitRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -110,24 +115,18 @@ export function createLayoutFromTemplate(
   }
 
   if (grid.columns === 3) {
-    const remainingRows = grid.columns * grid.rows - 3;
-    const projectRows = Math.ceil(remainingRows / 4);
-    const activityRows = Math.ceil((remainingRows - projectRows) / 3);
-    const taskRows = Math.ceil(
-      (remainingRows - projectRows - activityRows) / 2,
-    );
-    const snippetRows =
-      remainingRows - projectRows - activityRows - taskRows;
+    const middleRows = grid.rows - 2;
 
     return {
       cards: [
         card("profile", 1, 1, grid, false),
         card("focusPomodoro", 1, 1, grid),
         card("xFeed", 1, 1, grid),
-        card("projects", 1, projectRows, grid),
-        card("githubActivity", 1, activityRows, grid),
-        card("calendarTasks", 1, taskRows, grid),
-        card("snippets", 1, snippetRows, grid),
+        card("projects", 1, middleRows, grid),
+        card("githubActivity", 1, middleRows, grid),
+        card("calendarTasks", 1, middleRows, grid),
+        card("snippets", 1, 1, grid),
+        card("commits", 2, 1, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -135,17 +134,19 @@ export function createLayoutFromTemplate(
   }
 
   if (templateId === "compact") {
-    const profileRows = topBandRows;
+    const bottomActivitySpan = Math.ceil((grid.columns - 2) / 2);
+    const bottomTaskSpan = grid.columns - 2 - bottomActivitySpan;
 
     return {
       cards: [
-        card("profile", 1, profileRows, grid, false),
-        card("focusPomodoro", 1, profileRows, grid),
-        card("xFeed", grid.columns - 2, profileRows, grid),
-        card("projects", 1, bottomBandRows, grid),
-        card("githubActivity", 1, bottomBandRows, grid),
-        card("calendarTasks", grid.columns - 3, bottomBandRows, grid),
+        card("profile", 1, topBandRows, grid, false),
+        card("focusPomodoro", 1, topBandRows, grid),
+        card("projects", 1, topBandRows, grid),
+        card("xFeed", grid.columns - 3, topBandRows, grid),
+        card("githubActivity", bottomActivitySpan, bottomBandRows, grid),
+        card("calendarTasks", bottomTaskSpan, bottomBandRows, grid),
         card("snippets", 1, bottomBandRows, grid),
+        card("commits", 1, bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -155,8 +156,8 @@ export function createLayoutFromTemplate(
   if (templateId === "wide") {
     const projectSpan = grid.columns >= 5 ? 2 : 1;
     const xFeedTopSpan = grid.columns - projectSpan - 2;
-    const bottomActivitySpan = Math.ceil((grid.columns - 1) / 2);
-    const bottomTaskSpan = grid.columns - 1 - bottomActivitySpan;
+    const bottomActivitySpan = Math.ceil((grid.columns - 2) / 2);
+    const bottomTaskSpan = grid.columns - 2 - bottomActivitySpan;
 
     return {
       cards: [
@@ -167,6 +168,7 @@ export function createLayoutFromTemplate(
         card("githubActivity", bottomActivitySpan, bottomBandRows, grid),
         card("calendarTasks", bottomTaskSpan, bottomBandRows, grid),
         card("snippets", 1, bottomBandRows, grid),
+        card("commits", 1, bottomBandRows, grid),
       ],
       grid,
       layoutTemplateId: templateId,
@@ -175,8 +177,8 @@ export function createLayoutFromTemplate(
 
   const projectSpan = grid.columns >= 6 ? 2 : 1;
   const xFeedTopSpan = grid.columns - projectSpan - 2;
-  const bottomActivitySpan = Math.ceil((grid.columns - 1) / 2);
-  const bottomTaskSpan = grid.columns - 1 - bottomActivitySpan;
+  const bottomActivitySpan = Math.ceil((grid.columns - 2) / 2);
+  const bottomTaskSpan = grid.columns - 2 - bottomActivitySpan;
 
   return {
     cards: [
@@ -187,6 +189,7 @@ export function createLayoutFromTemplate(
       card("githubActivity", bottomActivitySpan, bottomBandRows, grid),
       card("calendarTasks", bottomTaskSpan, bottomBandRows, grid),
       card("snippets", 1, bottomBandRows, grid),
+      card("commits", 1, bottomBandRows, grid),
     ],
     grid,
     layoutTemplateId: "balanced",

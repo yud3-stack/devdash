@@ -12,7 +12,8 @@ export type DashboardCardId =
   | "calendarTasks"
   | "xFeed"
   | "focusPomodoro"
-  | "snippets";
+  | "snippets"
+  | "commits";
 
 export type GridAxis = "columns" | "rows";
 

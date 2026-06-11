@@ -27,7 +27,10 @@ export async function readProjectBranch(projectPath: string, fallback: string) {
   try {
     const { Command } = await import("@tauri-apps/plugin-shell");
     const output = await Command.create("git-current-branch", [
+      "-C",
       projectPath,
+      "branch",
+      "--show-current",
     ]).execute();
 
     if (output.code !== 0) {
