@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
 import { CalendarTasksCard } from "./components/cards/CalendarTasksCard";
+import { FocusPomodoroCard } from "./components/cards/FocusPomodoroCard";
 import { GitHubActivityCard } from "./components/cards/GitHubActivityCard";
 import { ProfileCard } from "./components/cards/ProfileCard";
 import { ProjectsCard } from "./components/cards/ProjectsCard";
@@ -72,12 +73,22 @@ function App() {
       );
     }
 
+    if (cardLayout.id === "xFeed") {
+      return (
+        <XFeedCard
+          key={cardLayout.id}
+          layout={cardLayout}
+          onResize={(axis, delta) => resizeCard("xFeed", axis, delta)}
+          xBearerToken={xBearerToken}
+        />
+      );
+    }
+
     return (
-      <XFeedCard
+      <FocusPomodoroCard
         key={cardLayout.id}
         layout={cardLayout}
-        onResize={(axis, delta) => resizeCard("xFeed", axis, delta)}
-        xBearerToken={xBearerToken}
+        onResize={(axis, delta) => resizeCard("focusPomodoro", axis, delta)}
       />
     );
   }

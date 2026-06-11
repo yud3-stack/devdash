@@ -10,7 +10,8 @@ export type DashboardCardId =
   | "githubActivity"
   | "projects"
   | "calendarTasks"
-  | "xFeed";
+  | "xFeed"
+  | "focusPomodoro";
 
 export type GridAxis = "columns" | "rows";
 
